@@ -4,8 +4,14 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema, type formInput } from "../types/formSchemas";
 import { formatValueHandler } from "../lib/formatValue";
+import type { FC } from "react";
+import type { ConvertsType } from "../App";
 
-const Form = () => {
+interface FormPropsType {
+  addConvert: (values: ConvertsType) => void;
+}
+
+const Form: FC<FormPropsType> = ({ addConvert }) => {
   const [isUsdToIrr, setIsUsdToIrr] = useState(true);
   const [result, setResult] = useState<number | null>(null);
   const {
@@ -31,8 +37,17 @@ const Form = () => {
   const resultHandler = (values: formInput) => {
     const amount = Number(values.amount);
     const rate = Number(values.rate);
+    const result = isUsdToIrr ? amount * rate : amount / rate;
+    setResult(result);
 
-    setResult(isUsdToIrr ? amount * rate : amount / rate);
+    const convert = {
+      amount,
+      rate,
+      result,
+      type: isUsdToIrr ? "USD to IRR" : "IRR to USD",
+    };
+
+    addConvert(convert);
   };
 
   const amount = watch("amount");
