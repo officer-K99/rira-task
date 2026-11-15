@@ -1,15 +1,30 @@
 import Header from "./components/header";
 import Card from "./components/card";
 import Form from "./components/form";
+import ConvertHistory from "./components/convertHistory";
+import { useState } from "react";
+
+export interface ConvertsType {
+  rate: number;
+  amount: number;
+  type: string;
+  result: number;
+}
 
 const App = () => {
+  const [converts, setConverts] = useState<ConvertsType[]>([]);
+
+  const addConvertHistoryHandler = (values: ConvertsType) => {
+    setConverts((prev) => [...prev, values]);
+  };
   return (
     <>
       <Header />
-      <main className="flex min-h-screen flex-col items-center gap-8 bg-[#12141a] px-6 py-10">
+      <main className="min-h-screen bg-[#12141a]">
         <Card>
-          <Form />
+          <Form addConvert={addConvertHistoryHandler} />
         </Card>
+        <ConvertHistory converts={converts} />
       </main>
     </>
   );
